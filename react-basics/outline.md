@@ -10,7 +10,7 @@ Agenda
 * Demo of basic React syntax
 * Properties
 * State
-* A challenge
+* Challenges
 
 
 Project structure
@@ -584,8 +584,11 @@ With this state added, we are now able to fill in the form, click the submit but
 
 Challenges/extra features
 -------------------------
-A couple of extra features that this shoppinglist application needs are:
-* removing an element from the list. You can for example do this by adding a button for each element or by doubleclicking
+To continue with this example and to get a better understanding of properties and state yourself, try to add one or more
+of the following features to this shoppinglist application. Clone the repository, follow the instructions in the README
+and get started writing code!
+
+* removing an element from the list. You can for example do this by adding a button for each element or by double clicking
   on the element itself.
 * clearing the shoppinglist. Add a button to the UI that removes all elements from the shoppinglist.
 * add a checkbox to the elements in the shoppinglist to signify an element to be 'done' while still keeping it on the
