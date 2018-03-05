@@ -50,7 +50,7 @@ Each file starts by doing some imports and the class definition. A React `Compon
 that returns the DOM elements to be shown in the browser. Finally, the UI element is exported, such that it can be
 used outside of the file it is defined in.
 
-```typescript
+```diff
 import * as React from "react"
 import { Component } from "react"
 
@@ -95,7 +95,7 @@ export default Header
 
 Then, in `App.tsx` we reference this component inside its `render` method:
 
-```typescript
+```diff
 import * as React from "react"
 import { Component } from "react"
 +import Header from "./Header"
@@ -118,7 +118,7 @@ The problem with this implementation of `Header` is that it can only show `Hello
 text, we want to use the same syntax as with an `<h1>`, namely `<Header>Hello!</Header>`. The text inside these tags
 can be reached in the `Header` component using `this.props.children`.
 
-```typescript
+```diff
 import * as React from 'react'
 import { Component } from "react"
 
@@ -140,7 +140,7 @@ export default Header
 
 Now you can use this improved `Header` in `App`:
 
-```typescript
+```diff
 import * as React from "react"
 import { Component } from "react"
 import Header from "./Header"
