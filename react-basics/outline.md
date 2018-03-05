@@ -10,6 +10,7 @@ Agenda
 * Demo of basic React syntax
 * Properties
 * State
+* A challenge
 
 
 Project structure
@@ -319,4 +320,264 @@ The above code in `App` will now generate both a header and a list in the browse
 
 State
 -----
-TODO
+In order to add new items to our shoppinglist, we require a little form. It will consist of one textfield and one button.
+
+![form](img/form.png)
+
+Thinking about this from a technical perspective, the text contained in a form field is part of the state of this form.
+State is, just like properties, defined in a separate interface and added as a generic parameter to the `Component`.
+Note that in the constructor the state needs to be initialized with a default value. This state can be initialized with
+the empty string, since the form field is initially empty.
+
+In the render function we define the form with a label, textfield and submit button. We set the value of the textfield
+equal to the current state that is defined in `FormState`. We also check for emptiness of the state and disable the
+button if that is the case.
+
+```typescript
+import * as React from "react"
+import { Component } from "react"
+
+interface FormProps {
+}
+
+interface FormState {
+    value: string
+}
+
+class Form extends Component<FormProps, FormState> {
+    constructor(props: FormProps) {
+        super(props)
+        this.state = { value: "" }
+    }
+
+    render() {
+        return (
+            <form>
+                <div>
+                    <label>Add an item</label>
+                    <input type="text"
+                           value={this.state.value}
+                           autoFocus/>
+                </div>
+                <button className="btn waves-effect waves-light"
+                        type="submit"
+                        disabled={this.state.value.length === 0}>Add item...</button>
+            </form>
+        )
+    }
+}
+
+export default Form
+```
+
+We also add `Form` to the `App` component to be displayed.
+
+```diff
+import * as React from "react"
+import { Component } from "react"
+import Header from "./Header"
+import ShoppingList from "./ShoppingList"
+import { Item } from "../model/Item"
++import Form from "./Form"
+
+class App extends Component {
+    render() {
+        return (
+            <div>
+                <Header>Hello!</Header>
+                <ShoppingList items={[
+                    new Item("coffee"),
+                    new Item("sugar"),
+                    new Item("milk"),
+                ]}/>
++                <Form />
+            </div>
+        )
+    }
+}
+
+export default App
+```
+
+At this moment you can type into the textfield, although the text inside it is not updated. The is because we have set
+the value of the field, but we did not yet define what should happen when we type some text into the field. This is
+done using the `onChange` attribute of the `<input/>`, which we need to connect to the state. When we type text in the
+field, the text needs to be changed, which would cause the `<input/>` to be updated, such that it displays the correct
+text.
+
+To do so, we create an event handler `handleChange` which calls `this.setState` to set the new state. We also add this
+function to the `<input/>`.
+
+```diff
+import * as React from "react"
+import { Component } from "react"
+
+interface FormProps {
+}
+
+interface FormState {
+    value: string
+}
+
+class Form extends Component<FormProps, FormState> {
+    constructor(props: FormProps) {
+        super(props)
+        this.state = { value: "" }
+    }
+    
++    handleChange = (event: React.ChangeEvent<FormState>) => {
++        event.preventDefault()
++        this.setState({ value: event.target.value })
++    }
+
+    render() {
+        return (
+            <form>
+                <div>
+                    <label>Add an item</label>
+                    <input type="text"
+                           value={this.state.value}
++                           onChange={this.handleChange}
+                           autoFocus/>
+                </div>
+                <button className="btn waves-effect waves-light"
+                        type="submit"
+                        disabled={this.state.value.length === 0}>Add item...</button>
+            </form>
+        )
+    }
+}
+
+export default Form
+```
+
+Now we are able to type text in the field and get it displayed on the screen as well.
+
+The next step would be to submit this form and add the text as a new element to the shoppinglist. For this we require
+a new type of state, namely the current list of `Item`s that need to be displayed by the `ShoppingList` component.
+We now need to decide where this state is supposed to live and who is going to manage it. It does not make sense to add
+this piece of state to the `Form` class, since `Form` has nothing to with managing this piece of state. It only is
+supposed to add something to this piece of state. Neither is `ShoppingList` supposed to have this piece of state,
+since it only is concerned with displaying the current value of the state (currently via `this.props.items`).
+A good rule of thumb is to put the state in the lowest parent in the 'component tree' of all children that require
+some form of access to the piece of state. In this case, that is `App`, which is the parent of both `ShoppingList` and
+`Form`.
+
+To do so, we define the `AppState` interface, which holds the `items: Item[]` state. Just as we did in `Form`,
+we also add an initial state to the constructor. Now, in order to add an item to the list, we define a function
+`addItem` which, given a `value: string`, will add a new `Item` to the state. Notice that this uses the spread operator
+to copy the full state and override the `items` field. It further uses the spread operator to append an `Item` to the
+end of a copy of the `items` array.
+
+Since we now have an official state which holds the values of the shoppinglist, we can replace our temparary listitems
+in the `ShoppingList` component call with the ones from the state: `<ShoppingList items={this.state.items}/>`.
+
+Now that we have a way to add an item to the list, we need to allow `Form` to call this function. For that, we pass
+this function along to `Form` as an attribute: `<Form onSubmit={this.addItem}/>`.
+
+```diff
+import * as React from "react"
+import { Component } from "react"
+import Header from "./Header"
+import ShoppingList from "./ShoppingList"
+import { Item } from "../model/Item"
+import Form from "./Form"
+
++interface AppState {
++    items: Item[]
++}
+
+class App extends Component<{}, AppState> {
+    constructor(props: {}) {
+        super(props)
++        this.state = { items: [] }
+    }
+
++    addItem = (value: string) => {
++        this.setState(prevState => ({ ...prevState, items: [...prevState.items, new Item(value)] }))
++    }
+
+    render() {
+        return (
+            <div>
+                <Header>Hello!</Header>
+-                <ShoppingList items={[
+-                    new Item("coffee"),
+-                    new Item("sugar"),
+-                    new Item("milk"),
+-                ]}/>
++                <ShoppingList items={this.state.items}/>
++                <Form onSubmit={this.addItem}/>
+            </div>
+        )
+    }
+}
+
+export default App
+
+```
+
+In `Form` we need to use this `addItem` function and therefore we need to store this function in our properties.
+We therefore refine our `onSubmit` property in `FormProps`, which was formerly empty.
+Inside the `Form` component we also define a new function `handleSubmit` that is called when the form submits. It
+retrieves the value of the textfield (from the local `FormState`) and uses this value as the argument in calling the new
+`onSubmit` function. Since this `onSubmit` is just a reference to the function in `App`, technically this makes sure
+that the `addItem` function is called.
+
+```diff
+import * as React from "react"
+import { Component } from "react"
+
+interface FormProps {
++    onSubmit: (value: string) => void
+}
+
+interface FormState {
+    value: string
+}
+
+class Form extends Component<FormProps, FormState> {
+    constructor(props: FormProps) {
+        super(props)
+        this.state = { value: "" }
+    }
+
+    handleChange = (event: React.ChangeEvent<FormState>) => {
+        event.preventDefault()
+        this.setState({ value: event.target.value })
+    }
+
++    handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
++        event.preventDefault()
++
++        this.props.onSubmit(this.state.value)
++        this.setState({ value: "" })
++    }
+
+    render() {
+        return (
+            <form onSubmit={this.handleSubmit}>
+                <div>
+                    <label>Add an item</label>
+                    <input type="text"
+                           value={this.state.value}
+                           onChange={this.handleChange}
+                           autoFocus/>
+                </div>
+                <button className="btn waves-effect waves-light"
+                        type="submit"
+                        disabled={this.state.value.length === 0}>Add item...
+                </button>
+            </form>
+        )
+    }
+}
+
+export default Form
+
+```
+
+With this state added, we are now able to fill in the form, click the submit button and add the new item to the list
+
+![app](img/app.png)
+

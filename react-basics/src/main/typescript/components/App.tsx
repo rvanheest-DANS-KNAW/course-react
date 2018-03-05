@@ -3,17 +3,28 @@ import { Component } from "react"
 import Header from "./Header"
 import ShoppingList from "./ShoppingList"
 import { Item } from "../model/Item"
+import Form from "./Form"
 
-class App extends Component {
+interface AppState {
+    items: Item[]
+}
+
+class App extends Component<{}, AppState> {
+    constructor(props: {}) {
+        super(props)
+        this.state = { items: [] }
+    }
+
+    addItem = (value: string) => {
+        this.setState(prevState => ({ ...prevState, items: [...prevState.items, new Item(value)] }))
+    }
+
     render() {
         return (
             <div>
                 <Header>Hello!</Header>
-                <ShoppingList items={[
-                    new Item("coffee"),
-                    new Item("sugar"),
-                    new Item("milk"),
-                ]}/>
+                <ShoppingList items={this.state.items}/>
+                <Form onSubmit={this.addItem}/>
             </div>
         )
     }
