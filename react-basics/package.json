@@ -2,7 +2,7 @@
   "name": "course-react",
   "version": "1.0.0-SNAPSHOT",
   "description": "A demo of React basics",
-  "main": "src/main/typescript/client.tsx",
+  "main": "src/main/typescript/index.tsx",
   "scripts": {
     "start": "NODE_ENV=development webpack-dev-server --hot --open --config webpack/dev.config.js",
     "build": "NODE_ENV=production webpack --config webpack/prod.config.js"
