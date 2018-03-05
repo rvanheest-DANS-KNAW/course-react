@@ -1,7 +1,7 @@
 course-react
 ============
 
-A demo of React basics
+A demo of React basics. See also the [outline] for this demo.
 
 
 BUILDING FROM SOURCE
@@ -28,4 +28,5 @@ BUILDING FROM SOURCE
 * `npm run build`
 * the output can be found in `./target/build`
 
+[outline]: outline.md
 [http://localhost:3000]: http://localhost:3000
