@@ -6,7 +6,7 @@ const config = require('./config.json');
 module.exports = {
     entry: [
         'react-hot-loader/patch',
-        './src/main/typescript/client.tsx',
+        './src/main/typescript/index.tsx',
     ],
 
     resolve: {
