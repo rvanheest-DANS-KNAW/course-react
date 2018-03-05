@@ -1,9 +1,10 @@
 import * as React from "react"
 import { Component } from "react"
+import Header from "./Header"
 
 class App extends Component {
     render() {
-        return <h1>Hello!</h1>
+        return <Header>Hello!</Header>
     }
 }
 

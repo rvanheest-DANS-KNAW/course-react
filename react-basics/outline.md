@@ -32,7 +32,7 @@ Project structure
   details, such as `title`, `meta` elements and `link`s to external CSS and/or JavaScript libraries, such as Bootstrap
   or MaterializeCSS.  The HTML's `body` element only contains a `<div id="app"></div>`. This is where React will in the
   end put the generated HTML. Please note that this HTML file does not contain references to our own JavaScript or CSS.
-  This is later injected by Webpack.
+  This will later be injected by Webpack.
 * Styling and other resources (images, etc.) will be put into **`src/main/resources/`**. Please note that in order for
   these files to be used, they must be referenced by the (Java|Type)Script sources.
 * **`src/main/typescript/index.tsx`** is the root of the application's code. This file makes sure that our custom CSS is
@@ -42,7 +42,118 @@ Project structure
 
 React basic syntax
 ------------------
-TODO
+In this section we look at React's syntax and create a styled header in the process.
+
+React separates its various UI elements into 'components'. Every React UI element therefore extends `React.Component`.
+Usually the convention is to create one file per UI element (except if the elements are closely related to each other).
+Each file starts by doing some imports and the class definition. A React `Component` always has a `render` function
+that returns the DOM elements to be shown in the browser. Finally, the UI element is exported, such that it can be
+used outside of the file it is defined in.
+
+```typescript
+import * as React from "react"
+import { Component } from "react"
+
+class App extends Component {
+    render() {
+        return <h1>Hello!</h1>
+    }
+}
+
+export default App
+```
+
+Note that it seems that you're writing HTML directly in the `return` statement of the `render` function. This is,
+however, only syntactic sugar that generates a virtual DOM element in the (Java|Type)Script code. In order to use this,
+make sure to change the file extension from `*.js` to `*.jsx` and from `*.ts` to `*.tsx`.
+
+The above code will generate a simple header in the browser:
+![h1](img/h1.png)
+
+### Header
+In this demo we will be using [MaterializeCSS](http://materializecss.com/). To create a Header using this CSS library,
+we need to write enough code to justify creating a separate (reusable) component.
+
+```typescript
+import * as React from 'react'
+import { Component } from "react"
+
+class Header extends Component {
+  render() {
+    return (
+      <nav>
+        <div className="nav-wrapper">
+          <a className="brand-logo center">Hello!</a>
+        </div>
+      </nav>
+    )
+  }
+}
+
+export default Header
+```
+
+Then, in `App.tsx` we reference this component inside its `render` method:
+
+```typescript
+import * as React from "react"
+import { Component } from "react"
++import Header from "./Header"
+
+class App extends Component {
+    render() {
+-        return <h1>Hello!</h1>
++        return <Header/>
+    }
+}
+
+export default App
+```
+
+The above code will generate a header styled with MaterializeCSS in the browser:
+![header](img/header.png)
+
+### Header with custom text
+The problem with this implementation of `Header` is that it can only show `Hello!` and nothing else. To give a custom
+text, we want to use the same syntax as with an `<h1>`, namely `<Header>Hello!</Header>`. The text inside these tags
+can be reached in the `Header` component using `this.props.children`.
+
+```typescript
+import * as React from 'react'
+import { Component } from "react"
+
+class Header extends Component {
+  render() {
+    return (
+      <nav>
+        <div className="nav-wrapper">
+-          <a className="brand-logo center">Hello!</a>
++          <a className="brand-logo center">{this.props.children}</a>
+        </div>
+      </nav>
+    )
+  }
+}
+
+export default Header
+```
+
+Now you can use this improved `Header` in `App`:
+
+```typescript
+import * as React from "react"
+import { Component } from "react"
+import Header from "./Header"
+
+class App extends Component {
+    render() {
+-        return <Header/>
++        return <Header>Hello!</Header>
+    }
+}
+
+export default App
+```
 
 
 Properties
