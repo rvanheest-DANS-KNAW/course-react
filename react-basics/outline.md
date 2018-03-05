@@ -72,7 +72,8 @@ The above code will generate a simple header in the browser:
 
 ### Header
 In this demo we will be using [MaterializeCSS](http://materializecss.com/). To create a Header using this CSS library,
-we need to write enough code to justify creating a separate (reusable) component.
+we need to write enough code to justify creating a separate (reusable) component. One notable difference with 'normal'
+HTML/CSS is that we need to use the `className` attribute instead of the regular `class` attribute.
 
 ```typescript
 import * as React from 'react'
@@ -153,6 +154,54 @@ class App extends Component {
 }
 
 export default App
+```
+
+
+Interlude: model
+----------------
+In the rest of this demo, we are going to create a simple shopping list application. For that we need to define a
+shoppinglist item (we will call the related UI element `ShoppingListItem`, so to avoid name collisions we will call
+this model `Item`). This object has two properties: a unique identifier and a display value. For the former we will use
+a UUID generator. Since this functionality is available in the `uuid` library, we need to install this using `npm`.
+Note that, since we're using TypeScript, we also need to install the `@types` package as a `devDependency`.
+The following two commands make sure that these dependencies will be added to `package.json`. Also don't forget to
+restart the development server after an install: `npm start`!
+
+    npm i -S uuid
+    npm i -D @types/uuid
+
+Now we can use the UUID generator while defining the `Item` model.
+
+```typescript
+import * as uuid from 'uuid/v4'
+
+export class Item {
+    public readonly id: string
+    public readonly value: string
+
+    constructor(value: string, id: string = uuid()) {
+        this.id = id
+        this.value = value
+    }
+}
+```
+
+Since the `ShoppingListItem` UI element that represents the `Item` model will be part of a list, we can define it as a
+reusable component with a `li` element. The content of this `li` will be the text in `Item.value`. 
+
+```typescript
+import * as React from 'react'
+import { Component } from "react"
+
+class ShoppingListItem extends Component {
+    render() {
+        return (
+            <li className='collection-item'>{this.props.children}</li>
+        )
+    }
+}
+
+export default ShoppingListItem
 ```
 
 
