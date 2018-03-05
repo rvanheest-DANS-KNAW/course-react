@@ -170,7 +170,8 @@ restart the development server after an install: `npm start`!
     npm i -S uuid
     npm i -D @types/uuid
 
-Now we can use the UUID generator while defining the `Item` model.
+Now we can use the UUID generator while defining the `Item` model. Please note that the `id` has a default argument,
+so `new Item("milk")` will create an `Item` with `id = uuid()`.
 
 ```typescript
 import * as uuid from 'uuid/v4'
@@ -207,7 +208,113 @@ export default ShoppingListItem
 
 Properties
 ----------
-TODO
+The list of items on the shoppinglist is used by a new ui element `ShoppingList`, which renders all `Item`s in an
+unordered list. We can therefore say that the `Item`s are a 'property' of `ShoppingList`. In fact, we have already seen
+the properties a couple of times with `this.props.children`. Every `Component` by default comes with a property called
+`children`. In order to add other, custom properties, we must specify that in an interface and pass this along to
+the `Component`.
+
+We use the the convention that this properties interface has the name `[ComponentName]Props`. Inside we define all
+properties and their types; in this case `items` of type `Item[]`. We give this `ShoppingListProps` as a type parameter
+(or generic) to the `Component` class that we extend from in `ShoppingList`. Note that we now also define a constructor
+to pass the received properties to the constructor of `Component`. When this is the only thing that is done in the
+constructor, we do not necessarily have to write this constructor, but for the purposes of this demo we will leave it in.
+
+```typescript
+import * as React from "react"
+import { Component } from "react"
+import { Item } from "../model/Item"
+
+interface ShoppingListProps {
+    items: Item[]
+}
+
+class ShoppingList extends Component<ShoppingListProps> {
+    constructor(props: ShoppingListProps) {
+        super(props)
+    }
+
+    render() {
+        return null
+    }
+}
+
+export default ShoppingList
+```
+
+When using `ShoppingList` we are now required to also provide a property `items`. Note that this is 'just an attribute'
+in the `<ShoppingList/>` HTML tag.
+
+```diff
+import * as React from "react"
+import { Component } from "react"
+import Header from "./Header"
++import ShoppingList from "./ShoppingList"
++import { Item } from "../model/Item"
+
+class App extends Component {
+    render() {
+-        return <Header>Hello!</Header>
++        return (
++            <div>
++                <Header>Hello!</Header>
++                <ShoppingList items={[
++                    new Item("coffee"),
++                    new Item("sugar"),
++                    new Item("milk"),
++                ]}/>
++            </div>
++        )
+    }
+}
+
+export default App
+```
+
+Now for the implementation of the `render` function in `ShoppingList`. If there are no items in the `items` array,
+we don't want to render the list at all. However, if there are any items in the list, we must render a `ShoppingListItem`
+for each `item` in `items`. For this conditional we can either use an if-else construction, or use a ternary operator
+as is used in the code below.
+
+When rendering the `<ul/>`, we access the `items` using `this.props.items` and map over them to create instances of the
+`ShoppingListItem`. Notice that we provide an extra `key={item.id}` for each of them. This is an attribute that React
+requires for a list to be correctly rendered. These keys must be unique in the list and are used to optimize rendering
+the list's items.
+
+```diff
+import * as React from "react"
+import { Component } from "react"
+import { Item } from "../model/Item"
+import ShoppingListItem from "./ShoppingListItem"
+
+interface ShoppingListProps {
+    items: Item[]
+}
+
+class ShoppingList extends Component<ShoppingListProps> {
+    constructor(props: ShoppingListProps) {
+        super(props)
+    }
+
+    render() {
+-        return null
++        const isEmpty = this.props.items.length == 0
++        const shoppingList = isEmpty
++            ? <div/>
++            : <ul className="collection">
++                {this.props.items.map(item => <ShoppingListItem key={item.id}>{item.value}</ShoppingListItem>)}
++            </ul>
++
++        return shoppingList
+    }
+}
+
+export default ShoppingList
+
+```
+
+The above code in `App` will now generate both a header and a list in the browser:
+![shoppinglist](img/shoppinglist.png)
 
 
 State
