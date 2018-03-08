@@ -258,7 +258,7 @@ class App extends Component {
 -       return <Header>Hello!</Header>
 +       return (
 +           <div>
-+               <Header>Hello!</Header>
++               <Header>Shoppinglist</Header>
 +               <ShoppingList items={[
 +                   new Item("coffee"),
 +                   new Item("sugar"),
@@ -384,7 +384,7 @@ class App extends Component {
     render() {
         return (
             <div>
-                <Header>Hello!</Header>
+                <Header>Shoppinglist</Header>
                 <ShoppingList items={[
                     new Item("coffee"),
                     new Item("sugar"),
@@ -500,7 +500,7 @@ class App extends Component<{}, AppState> {
     render() {
         return (
             <div>
-                <Header>Hello!</Header>
+                <Header>Shoppinglist</Header>
 -               <ShoppingList items={[
 -                   new Item("coffee"),
 -                   new Item("sugar"),
