@@ -22,7 +22,7 @@ class App extends Component<{}, AppState> {
     render() {
         return (
             <div>
-                <Header>Hello!</Header>
+                <Header>Shoppinglist</Header>
                 <ShoppingList items={this.state.items}/>
                 <Form onSubmit={this.addItem}/>
             </div>
