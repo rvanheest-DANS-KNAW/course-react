@@ -51,7 +51,7 @@ Each file starts by doing some imports and the class definition. A React `Compon
 that returns the DOM elements to be shown in the browser. Finally, the UI element is exported, such that it can be
 used outside of the file it is defined in.
 
-```diff
+```typescript
 import * as React from "react"
 import { Component } from "react"
 
@@ -104,8 +104,8 @@ import { Component } from "react"
 
 class App extends Component {
     render() {
--        return <h1>Hello!</h1>
-+        return <Header/>
+-       return <h1>Hello!</h1>
++       return <Header/>
     }
 }
 
@@ -129,8 +129,8 @@ class Header extends Component {
     return (
       <nav>
         <div className="nav-wrapper">
--          <a className="brand-logo center">Hello!</a>
-+          <a className="brand-logo center">{this.props.children}</a>
+-         <a className="brand-logo center">Hello!</a>
++         <a className="brand-logo center">{this.props.children}</a>
         </div>
       </nav>
     )
@@ -149,8 +149,8 @@ import Header from "./Header"
 
 class App extends Component {
     render() {
--        return <Header/>
-+        return <Header>Hello!</Header>
+-       return <Header/>
++       return <Header>Hello!</Header>
     }
 }
 
@@ -255,17 +255,17 @@ import Header from "./Header"
 
 class App extends Component {
     render() {
--        return <Header>Hello!</Header>
-+        return (
-+            <div>
-+                <Header>Hello!</Header>
-+                <ShoppingList items={[
-+                    new Item("coffee"),
-+                    new Item("sugar"),
-+                    new Item("milk"),
-+                ]}/>
-+            </div>
-+        )
+-       return <Header>Hello!</Header>
++       return (
++           <div>
++               <Header>Shoppinglist</Header>
++               <ShoppingList items={[
++                   new Item("coffee"),
++                   new Item("sugar"),
++                   new Item("milk"),
++               ]}/>
++           </div>
++       )
     }
 }
 
@@ -298,15 +298,15 @@ class ShoppingList extends Component<ShoppingListProps> {
     }
 
     render() {
--        return null
-+        const isEmpty = this.props.items.length == 0
-+        const shoppingList = isEmpty
-+            ? <div/>
-+            : <ul className="collection">
-+                {this.props.items.map(item => <ShoppingListItem key={item.id}>{item.value}</ShoppingListItem>)}
-+            </ul>
+-       return null
++       const isEmpty = this.props.items.length == 0
++       const shoppingList = isEmpty
++           ? <div/>
++           : <ul className="collection">
++               {this.props.items.map(item => <ShoppingListItem key={item.id}>{item.value}</ShoppingListItem>)}
++           </ul>
 +
-+        return shoppingList
++       return shoppingList
     }
 }
 
@@ -384,13 +384,13 @@ class App extends Component {
     render() {
         return (
             <div>
-                <Header>Hello!</Header>
+                <Header>Shoppinglist</Header>
                 <ShoppingList items={[
                     new Item("coffee"),
                     new Item("sugar"),
                     new Item("milk"),
                 ]}/>
-+                <Form />
++               <Form />
             </div>
         )
     }
@@ -425,10 +425,10 @@ class Form extends Component<FormProps, FormState> {
         this.state = { value: "" }
     }
     
-+    handleChange = (event: React.ChangeEvent<FormState>) => {
-+        event.preventDefault()
-+        this.setState({ value: event.target.value })
-+    }
++   handleChange = (event: React.ChangeEvent<FormState>) => {
++       event.preventDefault()
++       this.setState({ value: event.target.value })
++   }
 
     render() {
         return (
@@ -437,7 +437,7 @@ class Form extends Component<FormProps, FormState> {
                     <label>Add an item</label>
                     <input type="text"
                            value={this.state.value}
-+                           onChange={this.handleChange}
++                          onChange={this.handleChange}
                            autoFocus/>
                 </div>
                 <button className="btn waves-effect waves-light"
@@ -490,24 +490,24 @@ import Form from "./Form"
 class App extends Component<{}, AppState> {
     constructor(props: {}) {
         super(props)
-+        this.state = { items: [] }
++       this.state = { items: [] }
     }
 
-+    addItem = (value: string) => {
-+        this.setState(prevState => ({ ...prevState, items: [...prevState.items, new Item(value)] }))
-+    }
++   addItem = (value: string) => {
++       this.setState(prevState => ({ ...prevState, items: [...prevState.items, new Item(value)] }))
++   }
 
     render() {
         return (
             <div>
-                <Header>Hello!</Header>
--                <ShoppingList items={[
--                    new Item("coffee"),
--                    new Item("sugar"),
--                    new Item("milk"),
--                ]}/>
-+                <ShoppingList items={this.state.items}/>
-+                <Form onSubmit={this.addItem}/>
+                <Header>Shoppinglist</Header>
+-               <ShoppingList items={[
+-                   new Item("coffee"),
+-                   new Item("sugar"),
+-                   new Item("milk"),
+-               ]}/>
++               <ShoppingList items={this.state.items}/>
++               <Form onSubmit={this.addItem}/>
             </div>
         )
     }
@@ -529,7 +529,7 @@ import * as React from "react"
 import { Component } from "react"
 
 interface FormProps {
-+    onSubmit: (value: string) => void
++   onSubmit: (value: string) => void
 }
 
 interface FormState {
@@ -547,16 +547,17 @@ class Form extends Component<FormProps, FormState> {
         this.setState({ value: event.target.value })
     }
 
-+    handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-+        event.preventDefault()
++   handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
++       event.preventDefault()
 +
-+        this.props.onSubmit(this.state.value)
-+        this.setState({ value: "" })
-+    }
++       this.props.onSubmit(this.state.value)
++       this.setState({ value: "" })
++   }
 
     render() {
         return (
-            <form onSubmit={this.handleSubmit}>
+-           <form>
++           <form onSubmit={this.handleSubmit}>
                 <div>
                     <label>Add an item</label>
                     <input type="text"
