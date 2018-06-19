@@ -76,7 +76,7 @@ example 3: `DepositOverviewPage`
 * render by combining private methods
 
 
-toelichting op de hacketon
+toelichting op de hackathon
 --------------------------
 
 * Pairprogramming
