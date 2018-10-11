@@ -30,3 +30,10 @@ BUILDING FROM SOURCE
 
 [outline]: outline.md
 [http://localhost:3000]: http://localhost:3000
+
+Update dependencies
+-------------------
+
+    npm install -g npm-check-updates
+    ncu -u
+    npm install
